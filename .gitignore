@@ -1,0 +1,4 @@
+/.idea/
+/configs/.env*.local
+/*.iml
+/*.http
