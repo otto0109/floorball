@@ -7,6 +7,8 @@ import (
 	"first-project/api/dto"
 	"first-project/customError"
 	"first-project/internal/config"
+	"fmt"
+	"io/ioutil"
 	"net/http"
 )
 
@@ -33,7 +35,13 @@ func (service *vicciService) GetCatalogByTenantAndCarline(tenant string, carline
 		return
 	}
 
-	decodeError := json.Unmarshal([]byte(bodyToString(response)), &catalog)
+	body, err := ioutil.ReadAll(response.Body)
+
+	if err != nil {
+		return
+	}
+
+	decodeError := json.Unmarshal(body, &catalog)
 
 	if decodeError != nil {
 		err = errors.New("could'nt decode Json")
@@ -51,7 +59,13 @@ func (service *vicciService) GetAllCarlinesWithTenant(tenant string) (carlines [
 		return
 	}
 
-	decodeError := json.Unmarshal([]byte(bodyToString(response)), &result)
+	body, err := ioutil.ReadAll(response.Body)
+
+	if err != nil {
+		return
+	}
+
+	decodeError := json.Unmarshal(body, &result)
 
 	if decodeError != nil {
 		err = errors.New("could'nt decode Json")
@@ -81,15 +95,13 @@ func performVicciRequest(vicciBaseConfig config.VicciConfig, requestUrl string) 
 	if err != nil {
 		return nil, err
 	} else if response.StatusCode != http.StatusOK {
-		newString := bodyToString(response)
-		return nil, responseError.New(response.StatusCode, newString)
+		newString, err := ioutil.ReadAll(response.Body)
+
+		if err != nil {
+			return nil, err
+		}
+
+		return nil, responseError.New(response.StatusCode, string(newString))
 	}
 	return response, nil
-}
-
-func bodyToString(response *http.Response) string {
-	buf := new(bytes.Buffer)
-	buf.ReadFrom(response.Body)
-	newString := buf.String()
-	return newString
 }
