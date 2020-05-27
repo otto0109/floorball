@@ -1,13 +1,11 @@
 package service
 
 import (
-	"bytes"
 	"encoding/json"
 	"errors"
 	"first-project/api/dto"
 	"first-project/customError"
 	"first-project/internal/config"
-	"fmt"
 	"io/ioutil"
 	"net/http"
 )
