@@ -35,8 +35,9 @@ func GetCarlines(requestContext *gin.Context) {
 
 func serverMock() *httptest.Server {
 	handler := gin.Default()
-	handler.GET("/catalogue/salesgroups", GetCatalog)
+	handler.GET("/catalogue/overview", GetCatalog)
 	handler.GET("/catalogue/carlines", GetCarlines)
+	handler.GET("/catalogue/models")
 
 	server := httptest.NewServer(handler)
 
@@ -56,7 +57,7 @@ func TestVicciService_GetAllCarlinesWithTenant(t *testing.T) {
 
 		result, err := SetupCarlineService(vicciBaseConfig).GetAllCarlinesWithTenant(tenant)
 
-		assert.NoError(t, err.Error)
+		assert.NoError(t, err)
 		assert.Equal(t, getCarlines(), result)
 	})
 	t.Run("Get all Carlines with error", func(t *testing.T) {
@@ -70,7 +71,7 @@ func TestVicciService_GetAllCarlinesWithTenant(t *testing.T) {
 
 		_, err := SetupCarlineService(vicciBaseConfig).GetAllCarlinesWithTenant("fail")
 
-		assert.Equal(t, http.StatusBadRequest, err.Code)
+		assert.Error(t, err)
 	})
 	t.Run("Get all Carlines with error", func(t *testing.T) {
 		server := serverMock()
@@ -83,7 +84,7 @@ func TestVicciService_GetAllCarlinesWithTenant(t *testing.T) {
 
 		_, err := SetupCarlineService(vicciBaseConfig).GetAllCarlinesWithTenant("badBody")
 
-		assert.Equal(t, http.StatusInternalServerError, err.Code)
+		assert.Error(t, err)
 	})
 }
 
@@ -103,7 +104,7 @@ func TestVicciService_GetCatalogByTenantAndCarline(t *testing.T) {
 		result, err := SetupCarlineService(vicciBaseConfig).GetCatalogByTenantAndCarline(tenant, carline)
 
 		assert.Equal(t, getTestCatalog(), result)
-		assert.NoError(t, err.Error)
+		assert.NoError(t, err)
 	})
 	t.Run("Get Catalog with returned error", func(t *testing.T) {
 		server := serverMock()
@@ -116,7 +117,7 @@ func TestVicciService_GetCatalogByTenantAndCarline(t *testing.T) {
 
 		_, err := SetupCarlineService(vicciBaseConfig).GetCatalogByTenantAndCarline("fail", carline)
 
-		assert.Equal(t, http.StatusBadRequest, err.Code)
+		assert.Error(t, err)
 	})
 
 	t.Run("Get Catalog bad decode", func(t *testing.T) {
@@ -130,15 +131,18 @@ func TestVicciService_GetCatalogByTenantAndCarline(t *testing.T) {
 
 		_, err := SetupCarlineService(vicciBaseConfig).GetCatalogByTenantAndCarline("badBody", carline)
 
-		assert.Equal(t, http.StatusInternalServerError, err.Code)
+		assert.Error(t, err)
 	})
 }
 
-func getTestCatalogResponse() CarlineCatalogResponse {
-	return CarlineCatalogResponse{
-		Name:            "VW_GOLF",
-		Code:            "123456",
-		referenceModels: nil,
+func getTestCatalogResponse() dto.VicciCarlineCatalogResult {
+	return dto.VicciCarlineCatalogResult{
+		Carline: dto.CarlineCatalog{
+			Name:        "VW_GOLF",
+			Code:        "123456",
+			Salesgroups: nil,
+		},
+		Salesgroups: nil,
 	}
 }
 

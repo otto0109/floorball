@@ -1,5 +1,10 @@
 package dto
 
+type VicciCarlineCatalogResult struct {
+	Carline     CarlineCatalog
+	Salesgroups []Salesgroup
+}
+
 type CarlineCatalog struct {
 	Name        string
 	Code        string
@@ -9,12 +14,16 @@ type CarlineCatalog struct {
 type Salesgroup struct {
 	Name   string
 	Code   string
-	Models []Model `json:"referenceModels"`
+	Models []Model
+}
+
+type ModelResult struct {
+	Models []Model
 }
 
 type Model struct {
 	Name      string
 	Code      string
 	Version   string
-	ModelYear string
+	ModelYear string `json:"year"`
 }

@@ -15,14 +15,14 @@ type CarlineServiceMock struct {
 	mock.Mock
 }
 
-func (mock *CarlineServiceMock) GetAllCarlinesWithTenant(tenant string) ([]dto.Carline, ResponseError) {
+func (mock *CarlineServiceMock) GetAllCarlinesWithTenant(tenant string) ([]dto.Carline, error) {
 	args := mock.Called(tenant)
-	return args.Get(0).([]dto.Carline), args.Get(1).(ResponseError)
+	return args.Get(0).([]dto.Carline), args.Error(1)
 }
 
-func (mock *CarlineServiceMock) GetCatalogByTenantAndCarline(tenant string, carline string) (dto.CarlineCatalog, ResponseError) {
+func (mock *CarlineServiceMock) GetCatalogByTenantAndCarline(tenant string, carline string) (dto.CarlineCatalog, error) {
 	args := mock.Called(tenant, carline)
-	return args.Get(0).(dto.CarlineCatalog), args.Get(1).(ResponseError)
+	return args.Get(0).(dto.CarlineCatalog), args.Error(1)
 }
 
 func TestCarlineApi_GetAllCarlines(t *testing.T) {
@@ -36,10 +36,7 @@ func TestCarlineApi_GetAllCarlines(t *testing.T) {
 				Name: "VW Golf",
 				Code: "879613",
 			},
-		}, ResponseError{
-			Code:  200,
-			Error: nil,
-		})
+		}, nil)
 
 		router := gin.Default()
 
@@ -59,10 +56,7 @@ func TestCarlineApi_GetAllCarlines(t *testing.T) {
 				Name: "VW Golf",
 				Code: "879613",
 			},
-		}, ResponseError{
-			Code:  500,
-			Error: errors.New("testError"),
-		})
+		}, errors.New("sample"))
 
 		router := gin.Default()
 
@@ -86,11 +80,7 @@ func TestCarlineApi_GetCatalog(t *testing.T) {
 				Name:        "VW Golf",
 				Code:        carline,
 				Salesgroups: nil,
-			},
-			ResponseError{
-				Code:  200,
-				Error: nil,
-			})
+			}, nil)
 
 		router := gin.Default()
 
@@ -110,11 +100,7 @@ func TestCarlineApi_GetCatalog(t *testing.T) {
 				Name:        "VW Golf",
 				Code:        carline,
 				Salesgroups: nil,
-			},
-			ResponseError{
-				Code:  500,
-				Error: errors.New("test error"),
-			})
+			}, errors.New("sample"))
 
 		router := gin.Default()
 

@@ -6,15 +6,18 @@ import (
 	"first-project/api/dto"
 	"first-project/customError"
 	"first-project/internal/config"
+	"fmt"
 	"io/ioutil"
 	"net/http"
 )
 
 const (
-	allCarlinesUrl = "/catalogue/carlines?tenant="
-	catalogUrl     = "/catalogue/salesgroups?tenant="
-	flags          = "&fetchPrices=false&fetchMedia=false&addErrorMps=false"
-	carlineKeyFlag = "&carlineKey="
+	allCarlinesUrl    = "/catalogue/carlines?tenant="
+	catalogUrl        = "/catalogue/overview?tenant="
+	flags             = "&fetchPrices=false&fetchMedia=false&addErrorMps=false&fetchMandatory=false&fetchTechnical=false&fetchEco=false&fetchWltp=false"
+	carlineKeyFlag    = "&carlineKey="
+	getModels         = "/catalogue/models?tenant="
+	salesgroupKeyFlag = "&salesgroupKey="
 )
 
 type vicciService struct {
@@ -39,10 +42,39 @@ func (service *vicciService) GetCatalogByTenantAndCarline(tenant string, carline
 		return
 	}
 
-	decodeError := json.Unmarshal(body, &catalog)
+	var vicciCarlineCatalogResult dto.VicciCarlineCatalogResult
+
+	decodeError := json.Unmarshal(body, &vicciCarlineCatalogResult)
+
+	catalog = vicciCarlineCatalogResult.Carline
+	catalog.Salesgroups = vicciCarlineCatalogResult.Salesgroups
 
 	if decodeError != nil {
 		err = errors.New("could'nt decode Json")
+	}
+
+	for index, salesgroup := range catalog.Salesgroups {
+		response, err := performVicciRequest(service.vicciBaseConfig, getModels+tenant+salesgroupKeyFlag+salesgroup.Code+flags)
+
+		if err != nil {
+			return dto.CarlineCatalog{}, err
+		}
+
+		body, err := ioutil.ReadAll(response.Body)
+
+		if err != nil {
+			return dto.CarlineCatalog{}, err
+		}
+
+		var models dto.ModelResult
+
+		decodeError := json.Unmarshal(body, &models)
+
+		if decodeError != nil {
+			err = errors.New("could'nt decode Json")
+		}
+
+		catalog.Salesgroups[index].Models = models.Models
 	}
 
 	return
@@ -81,6 +113,7 @@ func performVicciRequest(vicciBaseConfig config.VicciConfig, requestUrl string) 
 	}
 
 	req, err := http.NewRequest("GET", vicciBaseConfig.BaseURL+requestUrl, nil)
+	fmt.Println(req)
 
 	if err != nil {
 		return nil, err
