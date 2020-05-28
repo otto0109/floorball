@@ -1,12 +1,12 @@
 package main
 
 import (
-	"first-project/api"
-	"first-project/internal/config"
-	"first-project/internal/service"
-	_ "github.com/aws/aws-sdk-go/aws/session"
+	"floorball/api"
+	"floorball/internal/config"
+	"floorball/internal/repository"
+	"floorball/internal/service"
+	"floorball/internal/util"
 	"github.com/gin-gonic/gin"
-	_ "github.com/jinzhu/gorm/dialects/mysql"
 	"log"
 	"os"
 )
@@ -17,15 +17,24 @@ func main() {
 	if envExists == false {
 		env = "production"
 	}
-	vicciBaseConfig, err := config.LoadVicciBaseURL(env, configFolder)
+	databaseConfig, err := config.LoadDatabaseConfig(env, configFolder)
 	if err != nil {
 		log.Fatal(err) // Terminate the application if the config is broken
 	}
 
 	router := gin.Default()
+	db := util.InitDB(databaseConfig.ConnectionString())
 
-	carlineService := service.SetupCarlineService(*vicciBaseConfig)
-	api.ProvideCarlineApi(router, carlineService)
+	defer func() {
+		err = db.Close()
+		if err != nil {
+			panic(err)
+		}
+	}()
+
+	repository := repository.ProvidePlayerRepository(db)
+	service := service.ProvidePlayerService(repository)
+	api.InitRouterPlayer(service, router)
 
 	if err := router.Run(); err != nil {
 		panic(err)

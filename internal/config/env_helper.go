@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/joho/godotenv"
 	"os"
+	"strconv"
 )
 
 var (
@@ -18,6 +19,14 @@ func getEnv(key string, defaultVal string) string {
 		return value
 	}
 
+	return defaultVal
+}
+
+func getEnvAsInt(key string, defaultVal int) int {
+	env := getEnv(key, "")
+	if value, err := strconv.Atoi(env); err == nil {
+		return value
+	}
 	return defaultVal
 }
 

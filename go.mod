@@ -1,9 +1,9 @@
-module first-project
+module floorball
 
 go 1.14
 
 require (
-	github.com/aws/aws-sdk-go v1.31.4
+	github.com/aws/aws-sdk-go v1.31.4 // indirect
 	github.com/gin-gonic/gin v1.6.3
 	github.com/go-playground/assert/v2 v2.0.1
 	github.com/jinzhu/gorm v1.9.12
