@@ -3,7 +3,6 @@ package api
 import (
 	"floorball/api/mapper"
 	"floorball/internal/entities"
-	"fmt"
 	"github.com/gin-gonic/gin"
 	"net/http"
 )
@@ -31,8 +30,6 @@ func InitRouterPlayer(service playerService, router *gin.Engine) {
 func (api *PlayerApi) GetPlayerByTeam(requestContext *gin.Context) {
 
 	param := requestContext.Param("team")
-
-	fmt.Println(param)
 
 	if param == "first" {
 		team := api.service.GetAllTeams()

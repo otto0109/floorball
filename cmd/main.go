@@ -6,7 +6,6 @@ import (
 	"floorball/internal/repository"
 	"floorball/internal/service"
 	"floorball/internal/util"
-	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"log"
 	"os"
@@ -24,7 +23,6 @@ func main() {
 	}
 
 	router := gin.Default()
-	router.Use(cors.Default())
 
 	db := util.InitDB(databaseConfig.ConnectionString())
 
