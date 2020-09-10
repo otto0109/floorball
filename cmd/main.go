@@ -6,6 +6,7 @@ import (
 	"floorball/internal/repository"
 	"floorball/internal/service"
 	"floorball/internal/util"
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"log"
 	"os"
@@ -23,6 +24,7 @@ func main() {
 	}
 
 	router := gin.Default()
+	router.Use(cors.Default())
 
 	db := util.InitDB(databaseConfig.ConnectionString())
 
@@ -41,7 +43,7 @@ func main() {
 	articleService := service.ProvideArticleService(articleRepository)
 	api.InitRouterArticle(articleService, router)
 
-	if err := router.Run(); err != nil {
+	if err := router.Run(":8080"); err != nil {
 		panic(err)
 	}
 }
