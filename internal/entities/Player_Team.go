@@ -1,7 +1,7 @@
 package entities
 
 type PlayerTeam struct {
-	Id       int
-	TeamID   int
-	PlayerID int
+	Id       int64
+	TeamID   int64
+	PlayerID int64
 }

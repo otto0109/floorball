@@ -12,6 +12,7 @@ func playerToDto(playerEntity entities.Player) (playerDto dto.Player) {
 	playerDto.Position = playerEntity.Position
 	playerDto.Qoute = playerEntity.Qoute
 	playerDto.Instagram = playerEntity.Instagram
+	playerDto.PictureUrl = playerEntity.PictureUrl
 
 	return playerDto
 }

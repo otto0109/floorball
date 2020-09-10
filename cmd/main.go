@@ -6,6 +6,7 @@ import (
 	"floorball/internal/repository"
 	"floorball/internal/service"
 	"floorball/internal/util"
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"log"
 	"os"
@@ -23,6 +24,8 @@ func main() {
 	}
 
 	router := gin.Default()
+	router.Use(cors.Default())
+
 	db := util.InitDB(databaseConfig.ConnectionString())
 
 	defer func() {
@@ -32,9 +35,13 @@ func main() {
 		}
 	}()
 
-	repository := repository.ProvidePlayerRepository(db)
-	service := service.ProvidePlayerService(repository)
-	api.InitRouterPlayer(service, router)
+	playerRepository := repository.ProvidePlayerRepository(db)
+	playerService := service.ProvidePlayerService(playerRepository)
+	api.InitRouterPlayer(playerService, router)
+
+	articleRepository := repository.ProvideArticleRepository(db)
+	articleService := service.ProvideArticleService(articleRepository)
+	api.InitRouterArticle(articleService, router)
 
 	if err := router.Run(); err != nil {
 		panic(err)

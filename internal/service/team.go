@@ -6,8 +6,9 @@ import (
 )
 
 type playerRepository interface {
-	GetPlayerByTeam(teamname string) entities.Team
+	GetTeamByTeamname(teamname string) entities.Team
 	CheckIfTeamExist(teamname string) bool
+	GetAllTeams() []entities.Team
 }
 
 type playerService struct {
@@ -18,7 +19,7 @@ func ProvidePlayerService(repository playerRepository) *playerService {
 	return &playerService{repository: repository}
 }
 
-func (service *playerService) GetPlayerByTeam(teamName string) (entities.Team, error) {
+func (service *playerService) GetTeamByTeamname(teamName string) (entities.Team, error) {
 
 	teamExist := service.repository.CheckIfTeamExist(teamName)
 
@@ -26,6 +27,10 @@ func (service *playerService) GetPlayerByTeam(teamName string) (entities.Team, e
 		return entities.Team{}, &customError.BadRequest{ErrorText: "team does not exist"}
 	}
 
-	return service.repository.GetPlayerByTeam(teamName), nil
+	return service.repository.GetTeamByTeamname(teamName), nil
 
+}
+
+func (service *playerService) GetAllTeams() []entities.Team {
+	return service.repository.GetAllTeams()
 }

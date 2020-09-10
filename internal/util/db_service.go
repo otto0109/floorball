@@ -18,6 +18,10 @@ func InitDB(connectionString string) *gorm.DB {
 		&entities.Player{},
 		&entities.Team{},
 		&entities.PlayerTeam{},
+		&entities.ArticleTeam{},
+		&entities.Article{},
+		&entities.TeamTraining{},
+		&entities.Training{},
 	)
 
 	return db
