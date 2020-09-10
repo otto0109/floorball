@@ -47,3 +47,4 @@ steps:
 
   workingDirectory: '$(modulePath)'
   displayName: 'Get dependencies, then build'
+  condition: succeededOrFailed()
