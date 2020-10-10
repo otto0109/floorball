@@ -30,10 +30,9 @@ steps:
   inputs:
     command: 'build'
     workingDirectory: '$(System.DefaultWorkingDirectory)'
-- task: CmdLine@1
+- task: CmdLine@2
   inputs:
-   arguments: 'ls'
-   filename: ''
+   script: 'ls'
 - task: CopyFiles@1
   inputs:
     SourceFolder: ''
