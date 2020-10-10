@@ -35,7 +35,7 @@ steps:
    script: 'ls'
 - task: CopyFiles@1
   inputs:
-    SourceFolder: 'api'
+    contents: 'floorball.exe'
     TargetFolder: '$(Build.ArtifactStagingDirectory)'
 - task: PublishBuildArtifacts@1
   inputs:
