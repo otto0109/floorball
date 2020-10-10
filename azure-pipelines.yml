@@ -32,7 +32,7 @@ steps:
     workingDirectory: '$(System.DefaultWorkingDirectory)'
 - task: CmdLine@2
   inputs:
-   script: 'ls'
+   script: 'ls -l'
 - task: CopyFiles@1
   inputs:
     contents: 'floorball.exe'
