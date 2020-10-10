@@ -30,9 +30,9 @@ steps:
   inputs:
     command: 'build'
     workingDirectory: '$(System.DefaultWorkingDirectory)'
-- task: CopyFiles@2
+- task: CopyFiles@1
   inputs:
-    SourceFolder: '$(Build.ArtifactStagingDirectory)/floorball'
+    SourceFolder: '$(Build.ArtifactStagingDirectory)/floorball.exe'
     TargetFolder: '$(Build.ArtifactStagingDirectory)'
 - task: PublishBuildArtifacts@1
   inputs:
