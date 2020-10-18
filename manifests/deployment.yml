@@ -1,0 +1,19 @@
+apiVersion : apps/v1
+kind: Deployment
+metadata:
+  name: "floorballcluster2-bf4c"
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: "floorballcluster2-bf4c"
+  template:
+    metadata:
+      labels:
+        app: "floorballcluster2-bf4c"
+    spec:
+      containers:
+        - name: "floorballcluster2-bf4c"
+          image: "floorballregistry.azurecr.io/floorballcluster2"
+          ports:
+          - containerPort: 8080
