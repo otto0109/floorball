@@ -12,7 +12,7 @@ variables:
 
   # Container registry service connection established during pipeline creation
   dockerRegistryServiceConnection: 'e18284d7-3178-4e1e-940a-e25fb0f34e79'
-  imageRepository: 'floorballbaceknd'
+  imageRepository: 'floorballbackend'
   containerRegistry: 'floorballregistry.azurecr.io'
   dockerfilePath: '**/Dockerfile'
   tag: '$(Build.BuildId)'
