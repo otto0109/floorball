@@ -1,0 +1,17 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+    name: "floorballcluster2-bf4c"
+    labels:
+        app: "floorballcluster2-bf4c"
+    annotations:
+        kubernetes.io/ingress.class: addon-http-application-routing
+spec:
+    rules:
+        - host: floorballbackend-floorballcluster2-bf4c.0edaa71be75d4f4c82df.westeurope.aksapp.io
+          http:
+            paths:
+            - path: /
+              backend:
+                serviceName: "floorballcluster2-bf4c"
+                servicePort: 8080
